@@ -1,0 +1,439 @@
+/*==================================================
+                    RESET
+==================================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+    background:#edf2f7;
+    display:flex;
+    min-height:100vh;
+    color:#333;
+}
+
+/*==================================================
+                    MENU
+==================================================*/
+
+.menu{
+    width:250px;
+    background:#1f2937;
+    color:white;
+    padding:25px;
+    position:fixed;
+    height:100%;
+    box-shadow:4px 0 15px rgba(0,0,0,.25);
+}
+
+.menu h2{
+    text-align:center;
+    margin-bottom:35px;
+    font-size:24px;
+}
+
+.menu button{
+    width:100%;
+    margin-bottom:15px;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#374151;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+    text-align:left;
+    font-size:15px;
+}
+
+.menu button i{
+    margin-right:10px;
+}
+
+.menu button:hover{
+    background:#2563eb;
+    transform:translateX(5px);
+}
+
+/*==================================================
+                CONTENIDO
+==================================================*/
+
+main{
+    margin-left:270px;
+    width:calc(100% - 270px);
+    padding:30px;
+}
+
+header{
+    margin-bottom:30px;
+}
+
+header h1{
+    font-size:35px;
+    color:#1e3a8a;
+}
+
+header p{
+    color:#555;
+    margin-top:8px;
+}
+
+/*==================================================
+                    TARJETAS
+==================================================*/
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 18px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin-bottom:20px;
+    color:#1e3a8a;
+}
+
+/*==================================================
+                    FILAS
+==================================================*/
+
+.fila{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    align-items:center;
+}
+
+/*==================================================
+                    INPUTS
+==================================================*/
+
+input,
+select{
+
+    padding:10px 12px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+input[type=text]{
+
+    width:320px;
+
+}
+
+input:focus,
+select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 8px rgba(37,99,235,.25);
+
+}
+
+/*==================================================
+                    BOTONES
+==================================================*/
+
+button{
+
+    padding:11px 18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#1d4ed8;
+
+    transform:scale(1.04);
+
+}
+
+#btnEliminar{
+
+    background:#dc2626;
+
+}
+
+#btnEliminar:hover{
+
+    background:#b91c1c;
+
+}
+
+#btnEditar{
+
+    background:#f59e0b;
+
+}
+
+#btnEditar:hover{
+
+    background:#d97706;
+
+}
+
+#btnPDF{
+
+    background:#16a34a;
+
+}
+
+#btnPDF:hover{
+
+    background:#15803d;
+
+}
+
+/*==================================================
+                LISTA EMPLEADOS
+==================================================*/
+
+#listaEmpleados{
+
+    width:350px;
+
+    height:220px;
+
+}
+
+/*==================================================
+                    TABLAS
+==================================================*/
+
+.tabla{
+
+    overflow:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+table thead{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+table th{
+
+    padding:15px;
+
+}
+
+table td{
+
+    padding:12px;
+
+    border:1px solid #e5e7eb;
+
+    text-align:center;
+
+}
+
+table tbody tr:nth-child(even){
+
+    background:#f8fafc;
+
+}
+
+table tbody tr:hover{
+
+    background:#dbeafe;
+
+}
+
+/*==================================================
+                CHECKBOX
+==================================================*/
+
+input[type=checkbox]{
+
+    transform:scale(1.3);
+
+}
+
+/*==================================================
+                SCROLL
+==================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2563eb;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#e5e7eb;
+
+}
+
+/*==================================================
+                TARJETAS
+==================================================*/
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    transition:.3s;
+
+}
+
+/*==================================================
+                RESPONSIVE
+==================================================*/
+
+@media(max-width:900px){
+
+.menu{
+
+    position:relative;
+
+    width:100%;
+
+    height:auto;
+
+}
+
+main{
+
+    margin-left:0;
+
+    width:100%;
+
+}
+
+.fila{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+input[type=text]{
+
+    width:100%;
+
+}
+
+#listaEmpleados{
+
+    width:100%;
+
+}
+
+table{
+
+    min-width:850px;
+
+}
+
+}
+
+/*==================================================
+        NAVEGACION DE SECCIONES
+==================================================*/
+
+#secHorarios {
+    display: none;
+}
+
+#secEmpleados {
+    display: none;
+}
+
+#secInicio {
+    display: block;
+}
+
+/*==================================================
+            ESTILO IMPRESION
+==================================================*/
+
+@media print{
+
+.menu{
+
+display:none;
+
+}
+
+body{
+
+background:white;
+
+}
+
+main{
+
+margin:0;
+
+width:100%;
+
+}
+
+button{
+
+display:none;
+
+}
+
+.card{
+
+box-shadow:none;
+
+border:1px solid black;
+
+}
+
+}

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Horarios</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!--================== MENU ==================-->
+
+    <aside class="menu">
+
+        <h2>
+            <i class="fa-solid fa-calendar-days"></i>
+            Horarios
+        </h2>
+
+        <button id="btnInicio">
+            <i class="fa-solid fa-house"></i>
+            Inicio
+        </button>
+
+        <button id="btnEmpleados">
+            <i class="fa-solid fa-users"></i>
+            Empleados
+        </button>
+
+        <button id="btnHorario">
+            <i class="fa-solid fa-table"></i>
+            Horarios
+        </button>
+
+        <button id="btnPDF">
+            <i class="fa-solid fa-file-pdf"></i>
+            Descargar PDF
+        </button>
+
+    </aside>
+
+    <!--================ CONTENIDO ================-->
+
+    <main>
+
+        <header>
+
+            <h1>Sistema de Horarios</h1>
+
+            <p>
+                Administración de empleados
+            </p>
+
+        </header>
+
+        <!--============== AGREGAR EMPLEADOS ==============-->
+
+        <section id="secEmpleados" class="card">
+
+            <h2>
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                Agregar empleado
+
+            </h2>
+
+            <div class="fila">
+
+                <input
+                    id="txtEmpleado"
+                    type="text"
+                    placeholder="Nombre del empleado">
+
+                <button id="btnAgregar">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Agregar
+
+                </button>
+
+            </div>
+
+            <div class="fila">
+
+                <label>Rol del Empleado</label>
+
+                <select id="cmbRol">
+                    <option value="Colaborador">Colaborador</option>
+                    <option value="Cubre Turnos">Cubre Turnos</option>
+                    <option value="Subgerente">Subgerente</option>
+                    <option value="Gerente">Gerente</option>
+                </select>
+
+                <button id="btnAsignarRol">
+
+                    <i class="fa-solid fa-user-check"></i>
+
+                    Asignar Rol
+
+                </button>
+
+            </div>
+
+            <div class="fila">
+
+                <select
+                    id="listaEmpleados"
+                    size="8">
+
+                </select>
+
+                <div id="infoRol" style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px; min-height: 30px;">
+                    Rol: <strong id="rolActual">-</strong>
+                </div>
+
+            </div>
+
+            <div class="fila">
+
+                <button id="btnEliminar">
+
+                    Eliminar
+
+                </button>
+
+                <button id="btnEditar">
+
+                    Editar
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!--================ HORARIOS =================-->
+
+        <section id="secHorarios" class="card">
+
+            <h2>
+
+                Horario Semanal
+
+            </h2>
+
+            <div class="fila">
+
+                <label>
+
+                    Empleado
+
+                </label>
+
+                <select id="cmbEmpleado">
+
+                </select>
+
+            </div>
+
+            <div class="tabla">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Día</th>
+
+                            <th>Trabaja</th>
+
+                            <th>Entrada</th>
+
+                            <th>Salida</th>
+
+                            <th>Turno</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <!--================ LUNES =================-->
+
+                        <tr>
+
+                            <td>Lunes</td>
+
+                            <td>
+
+                                <input
+                                    id="lunesTrabaja"
+                                    type="checkbox">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    id="lunesEntrada"
+                                    type="time">
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    id="lunesSalida"
+                                    type="time">
+
+                            </td>
+
+                            <td>
+
+                                <select id="lunesTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ MARTES =================-->
+
+                        <tr>
+
+                            <td>Martes</td>
+
+                            <td><input id="martesTrabaja" type="checkbox"></td>
+
+                            <td><input id="martesEntrada" type="time"></td>
+
+                            <td><input id="martesSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="martesTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ MIERCOLES =================-->
+
+                        <tr>
+
+                            <td>Miércoles</td>
+
+                            <td><input id="miercolesTrabaja" type="checkbox"></td>
+
+                            <td><input id="miercolesEntrada" type="time"></td>
+
+                            <td><input id="miercolesSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="miercolesTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ JUEVES =================-->
+
+                        <tr>
+
+                            <td>Jueves</td>
+
+                            <td><input id="juevesTrabaja" type="checkbox"></td>
+
+                            <td><input id="juevesEntrada" type="time"></td>
+
+                            <td><input id="juevesSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="juevesTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ VIERNES =================-->
+
+                        <tr>
+
+                            <td>Viernes</td>
+
+                            <td><input id="viernesTrabaja" type="checkbox"></td>
+
+                            <td><input id="viernesEntrada" type="time"></td>
+
+                            <td><input id="viernesSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="viernesTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ SABADO =================-->
+
+                        <tr>
+
+                            <td>Sábado</td>
+
+                            <td><input id="sabadoTrabaja" type="checkbox"></td>
+
+                            <td><input id="sabadoEntrada" type="time"></td>
+
+                            <td><input id="sabadoSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="sabadoTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                        <!--================ DOMINGO =================-->
+
+                        <tr>
+
+                            <td>Domingo</td>
+
+                            <td><input id="domingoTrabaja" type="checkbox"></td>
+
+                            <td><input id="domingoEntrada" type="time"></td>
+
+                            <td><input id="domingoSalida" type="time"></td>
+
+                            <td>
+
+                                <select id="domingoTurno">
+
+                                    <option></option>
+
+                                    <option>Apertura</option>
+
+                                    <option>Intermedio</option>
+
+                                    <option>Cierre</option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="fila">
+
+                <button id="btnGuardarHorario">
+
+                    Guardar Horario
+
+                </button>
+
+                <button id="btnActualizarHorario" style="display: none;">
+
+                    Actualizar Horario
+
+                </button>
+
+                <button id="btnLimpiar">
+
+                    Limpiar
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!--============== TABLA GENERAL ==============-->
+
+        <section id="secInicio" class="card">
+
+            <h2>
+
+                Horarios Registrados
+
+            </h2>
+
+            <table id="tablaGeneral">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Empleado</th>
+
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mié</th>
+                        <th>Jue</th>
+                        <th>Vie</th>
+                        <th>Sáb</th>
+                        <th>Dom</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
