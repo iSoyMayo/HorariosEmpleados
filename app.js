@@ -57,8 +57,47 @@ const rolActual = document.getElementById("rolActual");
 const listaEmpleados = document.getElementById("listaEmpleados");
 
 const cmbEmpleado = document.getElementById("cmbEmpleado");
+const fechaInicioSemana = document.getElementById("fechaInicioSemana");
 
 let empleados = [];
+
+function obtenerFechaActualInput() {
+    const hoy = new Date();
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, "0");
+    const day = String(hoy.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function obtenerFechaReferencia() {
+    if (fechaInicioSemana && fechaInicioSemana.value) {
+        const [year, month, day] = fechaInicioSemana.value.split("-").map(Number);
+        const fecha = new Date(year, month - 1, day);
+        fecha.setHours(12, 0, 0, 0);
+        return fecha;
+    }
+
+    return new Date();
+}
+
+function obtenerLunesSiguiente(fechaReferencia) {
+    const fecha = new Date(fechaReferencia);
+    fecha.setHours(12, 0, 0, 0);
+
+    const dia = fecha.getDay();
+    const diasHastaLunes = dia === 1 ? 0 : (dia === 0 ? 1 : 8 - dia);
+
+    fecha.setDate(fecha.getDate() + diasHastaLunes);
+    return fecha;
+}
+
+function formatearFechaCorta(fecha) {
+    return fecha.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+}
 
 
 //==========================================
@@ -90,6 +129,10 @@ window.onload = function(){
     cargarHorarios();
     
     limpiarFormulario();
+
+    if (fechaInicioSemana) {
+        fechaInicioSemana.value = obtenerFechaActualInput();
+    }
 
 }
 
@@ -1505,6 +1548,54 @@ function exportarDatos(){
 // GENERAR PDF
 //==========================================
 
+function agregarAreaFirmas(doc, pageWidth, pageHeight, margin, empleados) {
+    const yInicio = pageHeight - 78;
+    const altoFila = 7;
+    const xNombre = margin;
+    const xFirma = pageWidth * 0.55;
+    let yActual = yInicio;
+
+    doc.setDrawColor(120, 120, 120);
+    doc.setLineWidth(0.2);
+    doc.setFontSize(9);
+    doc.setFont(undefined, "bold");
+    doc.setTextColor(50, 50, 50);
+    doc.text("Listado de empleados y firma", margin, yActual - 6);
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, "bold");
+    doc.text("Empleado", xNombre, yActual);
+    doc.text("Firma", xFirma, yActual);
+    yActual += 4;
+    doc.line(margin, yActual, pageWidth - margin, yActual);
+    yActual += 4;
+
+    empleados.forEach((empleado, index) => {
+        if (yActual + altoFila > pageHeight - 12) {
+            doc.addPage();
+            yActual = 20;
+            doc.setFontSize(9);
+            doc.setFont(undefined, "bold");
+            doc.text("Listado de empleados y firma", margin, yActual - 6);
+            yActual += 8;
+            doc.setFontSize(8);
+            doc.setFont(undefined, "bold");
+            doc.text("Empleado", xNombre, yActual);
+            doc.text("Firma", xFirma, yActual);
+            yActual += 4;
+            doc.line(margin, yActual, pageWidth - margin, yActual);
+            yActual += 4;
+        }
+
+        const textoEmpleado = `${index + 1}. ${empleado.nombre}`;
+        doc.setFontSize(8);
+        doc.setFont(undefined, "normal");
+        doc.text(textoEmpleado, xNombre, yActual);
+        doc.line(xFirma, yActual + 1, pageWidth - margin, yActual + 1);
+        yActual += altoFila;
+    });
+}
+
 btnPDF.addEventListener("click", () => {
     
     if(horarios.length === 0) {
@@ -1516,52 +1607,57 @@ btnPDF.addEventListener("click", () => {
     const doc = new jsPDF("l", "mm", "a4");
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 8;
+    const colWidth = (pageWidth - margin - 40) / 7;
     
-    // Colores para cada turno
     const colores = {
         "Apertura": { bg: [255, 255, 150], text: [0, 0, 0] },
         "Cierre": { bg: [150, 220, 255], text: [0, 0, 0] },
         "Intermedio": { bg: [255, 180, 220], text: [0, 0, 0] },
         "DESCANSO": { bg: [220, 220, 220], text: [100, 100, 100] }
     };
+
+    const fechaReferencia = obtenerFechaReferencia();
+    const lunes = obtenerLunesSiguiente(fechaReferencia);
+    const diasSemana = Array.from({ length: 7 }, (_, index) => {
+        const fecha = new Date(lunes);
+        fecha.setDate(lunes.getDate() + index);
+        return {
+            etiqueta: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"][index],
+            fecha
+        };
+    });
     
     let yPos = 8;
-    const margin = 8;
-    const colWidth = (pageWidth - margin - 40) / 7;
     
-    // Título
     doc.setFontSize(14);
     doc.setFont(undefined, "bold");
     doc.setTextColor(80, 40, 80);
     doc.text("HORARIO SEMANAL", pageWidth / 2, yPos, { align: "center" });
     yPos += 6;
     
-    // Fecha
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
-    doc.text("Generado: " + new Date().toLocaleDateString("es-ES"), pageWidth / 2, yPos, { align: "center" });
+    doc.text(
+        "Semana: " + formatearFechaCorta(diasSemana[0].fecha) + " al " + formatearFechaCorta(diasSemana[6].fecha),
+        pageWidth / 2,
+        yPos,
+        { align: "center" }
+    );
     yPos += 5;
-    
-    // Encabezado de días
-    const diasSemana = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"];
-    const hoy = new Date();
     
     doc.setFontSize(8);
     doc.setFont(undefined, "bold");
     doc.setTextColor(0, 0, 0);
     
     let xPos = margin + 40;
-    diasSemana.forEach((dia, idx) => {
-        const fecha = new Date(hoy);
-        fecha.setDate(fecha.getDate() + idx);
-        const fechaStr = fecha.toLocaleDateString("es-ES");
-        
+    diasSemana.forEach((dia) => {
         doc.setFillColor(200, 200, 200);
-        doc.rect(xPos - colWidth/2, yPos - 3, colWidth, 8, "F");
+        doc.rect(xPos - colWidth / 2, yPos - 3, colWidth, 8, "F");
         doc.setTextColor(0, 0, 0);
-        doc.text(dia, xPos, yPos - 1.5, { align: "center", maxWidth: colWidth - 1 });
+        doc.text(dia.etiqueta, xPos, yPos - 1.5, { align: "center", maxWidth: colWidth - 1 });
         doc.setFontSize(6);
-        doc.text(fechaStr, xPos, yPos + 2, { align: "center", maxWidth: colWidth - 1 });
+        doc.text(formatearFechaCorta(dia.fecha), xPos, yPos + 2, { align: "center", maxWidth: colWidth - 1 });
         doc.setFontSize(8);
         
         xPos += colWidth;
@@ -1569,7 +1665,6 @@ btnPDF.addEventListener("click", () => {
     
     yPos += 8;
     
-    // Empleados
     const empleadosHorarios = horarios.map(registro => ({
         nombre: registro.empleado,
         horarios: registro.horario
@@ -1577,14 +1672,12 @@ btnPDF.addEventListener("click", () => {
     
     const cellHeight = 7;
     
-    empleadosHorarios.forEach(empleadoData => {
-        // Verificar si cabe en la página
-        if(yPos + cellHeight + 15 > pageHeight) {
+    empleadosHorarios.forEach((empleadoData) => {
+        if(yPos + cellHeight + 18 > pageHeight - 25) {
             doc.addPage();
             yPos = 8;
         }
         
-        // Nombre del empleado
         doc.setFillColor(220, 220, 220);
         doc.rect(margin, yPos, 38, cellHeight, "F");
         doc.setFontSize(8);
@@ -1593,10 +1686,9 @@ btnPDF.addEventListener("click", () => {
         const nombreCorto = empleadoData.nombre.length > 16 ? empleadoData.nombre.substring(0, 16) : empleadoData.nombre;
         doc.text(nombreCorto, margin + 2, yPos + cellHeight - 1.5, { maxWidth: 35 });
         
-        // Horarios por día
         xPos = margin + 40;
-        diasSemana.forEach(dia => {
-            const diaLower = dia.toLowerCase();
+        diasSemana.forEach((dia) => {
+            const diaLower = dia.etiqueta.toLowerCase();
             const dato = empleadoData.horarios[diaLower];
             
             if(dato && dato.trabaja) {
@@ -1606,14 +1698,14 @@ btnPDF.addEventListener("click", () => {
                 const colorText = colores[turno].text;
                 
                 doc.setFillColor(...colorBg);
-                doc.rect(xPos - colWidth/2, yPos, colWidth, cellHeight, "F");
+                doc.rect(xPos - colWidth / 2, yPos, colWidth, cellHeight, "F");
                 doc.setTextColor(...colorText);
                 doc.setFont(undefined, "bold");
                 doc.setFontSize(8);
                 doc.text(texto, xPos, yPos + cellHeight - 1.5, { align: "center", maxWidth: colWidth - 2 });
             } else {
                 doc.setFillColor(220, 220, 220);
-                doc.rect(xPos - colWidth/2, yPos, colWidth, cellHeight, "F");
+                doc.rect(xPos - colWidth / 2, yPos, colWidth, cellHeight, "F");
                 doc.setTextColor(100, 100, 100);
                 doc.setFont(undefined, "bold");
                 doc.setFontSize(8);
@@ -1626,8 +1718,8 @@ btnPDF.addEventListener("click", () => {
         yPos += cellHeight + 0.5;
     });
     
-    // Leyenda
-    yPos += 3;
+    agregarAreaFirmas(doc, pageWidth, pageHeight, margin, empleadosHorarios);
+    
     doc.setFontSize(7);
     doc.setFont(undefined, "normal");
     
@@ -1639,14 +1731,14 @@ btnPDF.addEventListener("click", () => {
     ];
     
     let leyendaX = margin;
-    leyendas.forEach(leyenda => {
+    leyendas.forEach((leyenda) => {
         doc.setFillColor(...leyenda.color);
-        doc.rect(leyendaX, yPos, 2.5, 2.5, "F");
+        doc.rect(leyendaX, pageHeight - 22, 2.5, 2.5, "F");
         doc.setTextColor(0, 0, 0);
-        doc.text(leyenda.text, leyendaX + 3.5, yPos + 2);
+        doc.text(leyenda.text, leyendaX + 3.5, pageHeight - 20);
         leyendaX += 67;
     });
     
-    window.open(doc.output('bloburi'), '_blank');
+    window.open(doc.output("bloburi"), "_blank");
     
 });
